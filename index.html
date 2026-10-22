@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokedex</title>
+    <link rel="icon" href="/assets/img/pokemon_go_play_game_cinema_film_movie_icon-icons.com_69163.png">
+    <link rel="stylesheet" href="/assets/style/style.css">
+    <script type="module" src="/assets/script/script.js"></script>
+
+</head>
+
+<body>
+    <div class="pokedex">
+        <!-- qui aggiungiamo il contenuto -->
+        <main>
+            <h1>Pokedex</h1>
+
+            <p class="subtitle">Inserisci il nome del pokemon appena catturato</p>
+
+            <!-- passo all'inserimento del nome del pokemon da aggiungere -->
+            <div>
+                <form action="" id="form">
+                    <label for="catturato">Pokemon catturato</label>
+                    <input type="text" id="catturato" placeholder="bulbasaur...." required>
+                    <button type="submit" id="button">Registra</button>
+                </form>
+            </div>
+
+            <div id="msg">
+
+            </div>
+
+            <div class="progress">
+                <div id="bar" class="progress-bar"></div>
+            </div>
+
+            <p id="counter"></p>
+            <ul id="list">
+            </ul>
+
+
+        </main>
+    </div>
+</body>
+
+</html>
