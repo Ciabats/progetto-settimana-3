@@ -5,34 +5,49 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pokedex</title>
-    <link rel="icon" href="/assets/img/pokemon_go_play_game_cinema_film_movie_icon-icons.com_69163.png">
-    <link rel="stylesheet" href="/assets/style/style.css">
-    <script type="module" src="/assets/script/script.js"></script>
+    <link rel="icon" href="assets/img/pokemon_go_play_game_cinema_film_movie_icon-icons.com_69163.png">
+    <link rel="stylesheet" href="assets/style/style.css">
+    <script src="assets/script/script.js"></script>
 
 </head>
 
 <body>
+
+    <header id="header">
+
+
+        <h1>Pokedex</h1>
+
+        <h2>Gen: 1-4</h2>
+
+        <button id="dark-mode">Dark mode</button>
+    </header>
+
     <div class="pokedex">
         <!-- qui aggiungiamo il contenuto -->
         <main>
-            <h1>Pokedex</h1>
 
-            <p class="subtitle">Inserisci il nome del pokemon appena catturato</p>
+
+
 
             <!-- passo all'inserimento del nome del pokemon da aggiungere -->
-            <div>
+            <section>
+                <p class="subtitle">Inserisci il nome del pokemon appena catturato</p>
                 <form action="" id="form">
                     <label for="catturato">Pokemon catturato</label>
                     <input type="text" id="catturato" placeholder="bulbasaur...." required>
                     <button type="submit" id="button">Registra</button>
                 </form>
-            </div>
 
-            <div id="msg">
+                <div id="msg">
 
-            </div>
+                </div>
 
-            <div class="stats">
+            </section>
+
+
+
+            <div class="statistiche">
 
 
                 <div class="contatori">
@@ -43,12 +58,53 @@
                 <div class="progress">
                     <!-- Barra che cresce a ogni pokemoon registrato cattura -->
                     <div id="bar" class="progress-bar"></div>
+
+
+
                 </div>
-                
+
+                <label for="filtro-tipi">Filtra per tipo: </label>
+                <select name="filtro" id="filtro-tipi">
+                    <option value="all">Tutti</option>
+                    <option value="normal">Normale</option>
+                    <option value="fire">Fuoco</option>
+                    <option value="water">Acqua</option>
+                    <option value="electric">Elettro</option>
+                    <option value="grass">Erba</option>
+                    <option value="ice">Ghiaccio</option>
+                    <option value="fighting">Lotta</option>
+                    <option value="poison">Veleno</option>
+                    <option value="ground">Terra</option>
+                    <option value="flying">Volante</option>
+                    <option value="psychic">Psico</option>
+                    <option value="bug">Coleottero</option>
+                    <option value="rock">Roccia</option>
+                    <option value="ghost">Spettro</option>
+                    <option value="dragon">Drago</option>
+                    <option value="dark">Buio</option>
+                    <option value="steel">Acciaio</option>
+                    <option value="fairy">Folletto</option>
+                </select>
+
+
             </div>
+
+
+            <ul id="list">
+            </ul>
+
 
         </main>
     </div>
+
+    <footer id="credits">
+        <p>
+            © The Pokemon Company International
+        </p>
+        <a href="https://pokeapi.co/">Dati dei Pokémon da PokeAPI</a>
+
+    </footer>
+
 </body>
 
 </html>
