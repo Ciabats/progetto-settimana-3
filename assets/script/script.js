@@ -10,12 +10,14 @@ const contaCatturati = document.querySelector('#conta-catturati');
 const contaMancanti = document.querySelector('#conta-mancanti');
 const filtro = document.querySelector('#tipi');
 const lista = document.querySelector('#list');
+const statoSelect = document.querySelector(`#stato`)
 
 const primo_ID = 1;
 const ultimo_ID = 493;
 const totale = ultimo_ID - primo_ID + 1;
 const CHIAVE_SALVATAGGIO = 'catturati';
 
+let stato = `tutti`
 let catturati = [];
 let base = [];
 let filtroAttivo = `all`;
@@ -65,7 +67,7 @@ async function recuperaPokemon(testo) { // Cerca un singolo Pokémon alla PokeAP
 
   // Se risponde con errore, il Pokémon non esiste
   if (!risposta.ok) {
-    throw new Error('Pokémon non trovato.');
+    return null;
   }
   // Trasformiamo la risposta in un oggetto
   const dati = await risposta.json();
@@ -121,7 +123,7 @@ function creaCard(p, catturato) {
   li.appendChild(numero);
   li.appendChild(nome);
 
-  // Se è catturato, aggiungo i tipi e il pulsante ✕
+  // aggiungo i tipi 
   if (catturato) {
     li.className = 'catturato';
 
@@ -129,7 +131,6 @@ function creaCard(p, catturato) {
     const tipi = document.createElement('div');
     tipi.className = 'tipi';
 
-    // Per ogni tipo creo un badge colorato
     for (let i = 0; i < p.types.length; i++) {
       const tipo = document.createElement('span');
       tipo.className = 'tipo ' + p.types[i];
@@ -148,15 +149,22 @@ function creaCard(p, catturato) {
   } else {
     li.className = 'fantasma';
   }
-
-  // Restituisco la riga 
   return li;
 }
 
+function visualizzazione(preso) {
+  if (stato === 'catturati' && !preso) {
+    return false;   // non è catturato, quindi non lo voglio vedere
+  }
+  if (stato === 'mancanti' && preso) {
+    return false;   // è catturato, quindi non lo voglio vedere
+  }
+  return true
+}
 
-// Ridisegna tutta la lista a partire da base e dai catturati
+
 function creaLista() {
-  // Svuoto la lista, così non restano card vecchie
+  // Svuoto la lista, 
   lista.innerHTML = "";
 
   // Scorro tutti i Pokémon della generazione
@@ -164,41 +172,40 @@ function creaLista() {
     const p = base[i];
 
     // Cerco il Pokémon tra i catturati.
-    // Se lo trovo, 'preso' contiene i suoi dati; altrimenti vale undefined.
     const preso = trovaCatturato(p.id);
 
-    if (preso) {
-      // È catturato: uso i dati salvati, che hanno anche i tipi
-      lista.appendChild(creaCard(preso, true));
-    } else {
-      // Non è catturato: uso la riga fantasma
-      lista.appendChild(creaCard(p, false));
-    }
+ if (visualizzazione(preso)) {
+      if (preso) {
+        // È catturato: uso i dati salvati, che hanno anche i tipi
+        lista.appendChild(creaCard(preso, true));
+      } else {
+        // Non è catturato: uso i dati della lista base
+        lista.appendChild(creaCard(p, false));
+      }
 
 
-    // Alla fine aggiorno barra e contatori
+  }
+    //aggiorno barra e contatori
     aggiornaContatori();
-  }
 
-  function aggiornaContatori() {
-    const presi = catturati.length
+}
+}
 
-    const mancanti = totale - presi;
+function aggiornaContatori() {
+  const presi = catturati.length
 
-    contaCatturati.textContent = presi;
-    contaMancanti.textContent = mancanti;
+  const mancanti = totale - presi;
 
-    barra.style.width = (presi / totale) * 100 + `%`;
-  }
+  contaCatturati.textContent = presi;
+  contaMancanti.textContent = mancanti;
+
+  barra.style.width = (presi / totale) * 100 + `%`;
 }
 
 /* ----------  EVENTI PAGINA ---------- */
-// function rimuovi(id) { }
-
 
 form.addEventListener(`submit`, async function form(e) {
   e.preventDefault();
-  bottone.disabled = true;
 
   const pokemon = await recuperaPokemon(campo.value);
 
@@ -212,7 +219,7 @@ form.addEventListener(`submit`, async function form(e) {
     alert(pokemon.name + ' non appartiene alle prime quattro generazioni.');
     return;
   }
-   catturati.push(pokemon);
+  catturati.push(pokemon);
   salvaInMemoria();
   creaLista();
   alert(pokemon.name + ' catturato!');
@@ -224,6 +231,15 @@ darkMode.addEventListener('click', function () {
   document.documentElement.classList.toggle('notte');
 });
 
+statoSelect.addEventListener(`change`, function(){
+  stato = statoSelect.value;
+  creaLista();
+})
+
+filtro.addEventListener('change', function () {
+  filtroAttivo = filtro.value;      // salvo il tipo scelto
+  creaLista();                      // ridisegno con il nuovo filtro
+});
 
 
 caricaDallaMemoria();

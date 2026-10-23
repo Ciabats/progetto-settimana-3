@@ -157,6 +157,11 @@ input {
 .contatori span {
   margin-right: 12px;
 }
+#stato{
+    padding: 6px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
 
 /* Stilizzo il div per la progress-bar */
 .progress {
@@ -174,7 +179,7 @@ input {
   height: 100%;
   width: 0;
   background: #e35e5e;
-  /* transition: width 0.3s; */
+
 }
 
 #tipi {
@@ -189,7 +194,6 @@ input {
   margin: 0 auto;
   padding: 0;
   list-style: none;
-  /* tolgo i pallini dagli elementi della lista */
 }
 
 /* stilizzo i conteniotri che poi verranno popolati dallo script  */
