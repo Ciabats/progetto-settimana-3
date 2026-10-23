@@ -371,10 +371,28 @@ html.notte #header {
 }
 
 /* form in modalità notte */
+html.notte .section{
+  background-color: black;
+}
 
-/* html.notte section {} */
+html.notte section p{
+  color: white;
+}
+
+html.notte form label{
+  color: white;
+}
+
 
 /* Statistiche in modalità notte */
+html.notte .statistiche{
+  background-color: black;
+}
+
+html.notte .contatori span{
+  color: white;
+}
+
 html.notte .progress {
   background: #1a1a1a;
 }
@@ -383,7 +401,7 @@ html.notte .contatori {
   color: white;
 }
 
-html.notte label {
+html.notte .statistiche label{
   color: white;
 }
 
