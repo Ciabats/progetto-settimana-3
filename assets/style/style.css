@@ -177,26 +177,171 @@ input {
   /* transition: width 0.3s; */
 }
 
+#tipi {
+  padding: 6px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+/* ---------- LISTA: UNA RIGA PER POKÉMON ---------- */
 #list {
   max-width: 850px;
   margin: 0 auto;
   padding: 0;
-  list-style: none; /* tolgo i pallini dagli elementi della lista */
+  list-style: none;
+  /* tolgo i pallini dagli elementi della lista */
 }
 
 /* stilizzo i conteniotri che poi verranno popolati dallo script  */
 #list li {
-  position: relative;    /* serve per posizionare il ✕ dentro la riga */
-  width: 100%;           /* largo quanto il parent */
-  margin: 0 0 5px;       
+  position: relative;
+  /* serve per posizionare il ✕ dentro la riga */
+  width: 100%;
+  /* largo quanto il parent */
+  margin: 0 0 5px;
+  /*spazio sotto ogni riga per spaziare*/
   padding: 8px 12px;
   background: white;
   border: 2px solid #ddd;
   border-radius: 10px;
-  overflow: hidden;      /* contiene l'immagine floated */
 }
 
+/* Il blocco con numero, nome e tipi */
+.info {
+  overflow: hidden;
+}
 
+.numero {
+  font-size: 12px;
+  color: #666;
+}
+
+.nome {
+  font-size: 16px;
+  font-weight: bold;
+  /* text-transform: capitalize; */
+}
+
+/* contenitore dei tipi */
+.tipi {
+  margin-top: 4px;
+}
+
+/* qui stilizzo i tipi che poi verranno visualizzati nella lista per ogni pokemon*/
+.tipo {
+  display: inline-block;
+  margin-right: 4px;
+  padding: 2px 8px;
+  font-size: 11px;
+  color: white;
+  border-radius: 10px;
+  background: #777;
+}
+
+/* qui per ogni tipo assegno il rispettivo colore di sfondo*/
+.tipo.normal {
+  background: #a8a77a;
+}
+
+.tipo.fire {
+  background: #ee8130;
+}
+
+.tipo.water {
+  background: #6390f0;
+}
+
+.tipo.electric {
+  background: #f7d02c;
+  color: black;
+}
+
+.tipo.grass {
+  background: #7ac74c;
+}
+
+.tipo.ice {
+  background: #96d9d6;
+  color: black;
+}
+
+.tipo.fighting {
+  background: #c22e28;
+}
+
+.tipo.poison {
+  background: #a33ea1;
+}
+
+.tipo.ground {
+  background: #e2bf65;
+  color: black;
+}
+
+.tipo.flying {
+  background: #a98ff3;
+}
+
+.tipo.psychic {
+  background: #f95587;
+}
+
+.tipo.bug {
+  background: #a6b91a;
+}
+
+.tipo.rock {
+  background: #b6a136;
+}
+
+.tipo.ghost {
+  background: #735797;
+}
+
+.tipo.dragon {
+  background: #6f35fc;
+}
+
+.tipo.dark {
+  background: #705746;
+}
+
+.tipo.steel {
+  background: #b7b7ce;
+  color: black;
+}
+
+.tipo.fairy {
+  background: #d685ad;
+}
+
+#list li.catturato {
+  border-color: #ffcb05;
+  box-shadow: 0 0 10px rgba(255, 203, 5, 0.3);
+}
+
+#list li.fantasma {
+  opacity: 0.3;
+  filter: grayscale(100%);
+
+}
+
+.rimuovi {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  padding: 2px 8px;
+  font-size: 12px;
+  background: #333;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.rimuovi:hover {
+  background: #e3350d;
+}
 
 /* ---------- FOOTER ---------- */
 footer {
@@ -227,7 +372,7 @@ html.notte #header {
 
 /* form in modalità notte */
 
-html.notte section {}
+/* html.notte section {} */
 
 /* Statistiche in modalità notte */
 html.notte .progress {
