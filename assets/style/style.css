@@ -5,64 +5,71 @@
 
 
 
-body{
+body {
   margin: 0;
   min-height: 100vh;
   font-family: Arial, Helvetica, sans-serif;
   background: linear-gradient(#e3350d, #3a0802);
 }
 
-/* header introduttivo */
-#header{
+/* ---------- HEADER ---------- */
+
+/* position: relative serve come punto di riferimento per il pulsante Dark mode */
+#header {
   padding-top: 10px;
   color: rgb(17, 16, 16);
-  background:linear-gradient(#DFC460, #74621f); 
+  background: linear-gradient(#DFC460, #74621f);
   border: none;
   position: relative;
 }
 
-#header h1{
+/* Testi del titolo centrati */
+#header h1 {
   text-align: center;
-  
+
 }
 
-
-
-#header h2{
+#header h2 {
   text-align: center;
   padding-bottom: 5px;
   margin-top: 10px;
 }
 
-#dark-mode{
+#dark-mode {
+  position: absolute;
+  /* si posiziona rispetto all'header (che è relative) */
+  right: 16px;
+  /* distanza dal bordo destro */
+  bottom: 8px;
+  /* distanza dal bordo inferiore */
   background-color: #1a1a1a;
   color: white;
   border: 1px solid #333;
   border-radius: 5px;
   padding: 6px 12px;
   cursor: pointer;
-  position: absolute;
-  right: 16px;          /* distanza dal bordo destro */
-  bottom: 8px;         /* distanza dal bordo inferiore */
+
 }
 
 /* ------------------------------------------------------------------- */
 
-/* main section */
+/* ---------- CONTENITORE PRINCIPALE ---------- */
 
-.pokedex{
+/* Il riquadro: largo al massimo 800px e centrato con margin: auto */
+
+.pokedex {
   max-width: 800px;
   margin: auto;
   padding: 16px;
 }
 
-main{
+main {
   border: none;
 }
 
+/* ---------- FORM ---------- */
 
-
-
+/* La section è un blocco centrato */
 
 
 /* al clic del button si atttiva la modalità notte */
@@ -78,9 +85,7 @@ html.notte #header {
 
 /* form in modalità notte */
 
-html.notte section{
-
-}
+html.notte section {}
 
 /* Statistiche in modalità notte */
 html.notte .progress {
@@ -101,7 +106,15 @@ html.notte #filtro-tipi {
   border: 1px solid #333;
 }
 
-html.notte #list li{
-
+html.notte #list li {
+  background: #1c1c1c;
+  border-color: #333;
+  color: white;
 }
+
+html.notte .numero,
+html.notte .nome {
+  color: white;
+}
+
 /* ------------------------------------------------------ */
