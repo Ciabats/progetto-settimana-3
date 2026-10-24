@@ -1,247 +1,243 @@
+/* ===== ELEMENTI DELLA PAGIN ===== */
 
-/* ---------- ELEMENTI DELLA PAGINA ---------- */
 const darkMode = document.querySelector('#dark-mode');
 const form = document.querySelector('#form');
 const campo = document.querySelector('#catturato');
-const bottone = document.querySelector('#button');
-const messaggio = document.querySelector('#msg');
 const barra = document.querySelector('#bar');
 const contaCatturati = document.querySelector('#conta-catturati');
 const contaMancanti = document.querySelector('#conta-mancanti');
+const statoSelect = document.querySelector('#stato');
 const filtro = document.querySelector('#tipi');
 const lista = document.querySelector('#list');
-const statoSelect = document.querySelector(`#stato`)
 
-const primo_ID = 1;
-const ultimo_ID = 493;
+const primo_ID = 1;                       // primo indice del Pokedex
+const ultimo_ID = 493;                    // ultimo indice del Pokedex
 const totale = ultimo_ID - primo_ID + 1;
-const CHIAVE_SALVATAGGIO = 'catturati';
+const CHIAVE_SALVATAGGIO = 'catturati';   // nome con cui salvo nel browser
 
-let stato = `tutti`
-let catturati = [];
+
+/* ===== DATI ===== */
+
 let base = [];
-let filtroAttivo = `all`;
+let catturati = [];
 
-/* ---------- MEMORIA DEL BROWSER ---------- */
 
+/* ===== MEMORIA DEL BROWSER ===== */
+
+// Legge i catturati salvati
 function caricaDallaMemoria() {
-  // 1. Leggiamo il testo salvato con la chiave che abbiamo scelto nelle costanti.
-  //    Se la pagina non è mai stata usata, il risultato è null.
-  const salvati = localStorage.getItem(CHIAVE_SALVATAGGIO);
-
-  // 2. Controlliamo che ci sia davvero qualcosa.
-  //    Se salvati è null, il blocco dentro l'if non viene eseguito
-  //    e catturati resta com'è, cioè una lista vuota.
-  if (salvati) {
-    // 3. Il testo salvato è in formato JSON, cioè una forma scritta
-    //    della lista. JSON.parse lo riporta a un array di oggetti.
-    catturati = JSON.parse(salvati);
+  const salvati = localStorage.getItem(CHIAVE_SALVATAGGIO); // testo salvato
+  if (salvati) {                      // se c'è qualcosa
+    catturati = JSON.parse(salvati);  // diventa lista
   }
 }
 
-
+// Salva catturati
 function salvaInMemoria() {
   localStorage.setItem(CHIAVE_SALVATAGGIO, JSON.stringify(catturati));
 }
 
 
-/* ---------- RICERCA NEI CATTURATI ---------- */
+/* ===== RICERCA ===== */
 
+// Cerca il Pokémon per nome o id. 
+function trovaId(testo) {
+  const cercato = testo.trim()
+  for (let i = 0; i < base.length; i++) {      // scorto i Pokémon
+    // confronto con il nome, oppure con il numero scritto come testo
+    if (base[i].name === cercato || String(base[i].id) === cercato) {
+      return base[i].id;  //restituisco il numero
+    }
+  }
+  return 0;
+}
+
+// Cerca tra i catturati per id.
 function trovaCatturato(id) {
   for (let i = 0; i < catturati.length; i++) {
     if (catturati[i].id === id) {
       return catturati[i];
     }
   }
-  return undefined
+  return undefined;
 }
 
-/* ---------- POKEAPI ---------- */
 
-async function recuperaPokemon(testo) { // Cerca un singolo Pokémon alla PokeAPI, per nome o numero
+/* ===== CARICAMENTO POKEAPI ===== */
 
-  const cercato = testo.trim();
+// Scarica la lista dei Pokémon con una sola richiesta
+function caricaBase() {
+  // offset = da quale posizione partire, limit = quanti Pokémon prendere
+  const indirizzo = 'https://pokeapi.co/api/v2/pokemon?offset=' + (primo_ID - 1) + '&limit=' + totale;
 
-  // Chiediamo la scheda alla PokeAPI e aspettiamo la risposta
-  const risposta = await fetch('https://pokeapi.co/api/v2/pokemon/' + cercato);
-
-  // Se risponde con errore, il Pokémon non esiste
-  if (!risposta.ok) {
-    return null;
-  }
-  // Trasformiamo la risposta in un oggetto
-  const dati = await risposta.json();
-
-
-  return {
-    id: dati.id,
-    name: dati.name,
-    types: dati.types.map(function (t) {
-      return t.type.name;
+  fetch(indirizzo)                              // chiedo la lista
+    .then(function (risposta) {
+      return risposta.json();                   // traformo la risposta in oggetto
     })
-  };
+    .then(function (dati) {
+      for (let i = 0; i < dati.results.length; i++) {
+        base.push({
+          id: primo_ID + i,
+          name: dati.results[i].name
+        });
+      }
+      creaLista();
+    })
+    .catch(function () {
+      alert('Impossibile caricare la lista dei Pokémon.');
+    });
 }
 
 
+/* ===== AZIONI ===== */
 
-async function caricaBase() {
-  const address = 'https://pokeapi.co/api/v2/pokemon?offset=' + (primo_ID - 1) + '&limit=' + totale;
+// Cattura un Pokémon
+function catturaPokemon(id) {
+  const nome = base[id - primo_ID].name;      // il nome lo prendo dalla lista base
 
-  const risposta = await fetch(address);
-  const dati = await risposta.json()
+  fetch('https://pokeapi.co/api/v2/pokemon/' + id)   // chiedo la scheda di questo Pokémon
+    .then(function (risposta) {
+      return risposta.json();
+    })
+    .then(function (dati) {
+      const tipi = [];
+      for (let i = 0; i < dati.types.length; i++) {
+        tipi.push(dati.types[i].type.name);   // prendo il nome tipo
+      }
 
-  for (let i = 0; i < dati.results.length; i++) {
-    const id = primo_ID + i;
-    const pokemon = {
-      id: id,
-      name: dati.results[i].name
-    }
-    base.push(pokemon);
+      catturati.push({
+        id: id,
+        name: nome,
+        types: tipi
+      }
+      );
+      salvaInMemoria();                       // salvo nel browser
+      creaLista();
+      alert(nome + ' catturato');            // messaggio di conferma
+      campo.value = '';                       // svuoto il campo
+    })
+    .catch(function () {
+      alert('Errore di connessione, riprova.');
+    });
+}
+
+
+/* ===== CATTURATI/ DA CATTURARE ===== */
+
+function passaFiltri(preso) {
+  const statoScelto = statoSelect.value;      // di default è"tutti"
+
+  if (statoScelto === 'catturati' && !preso) {
+    return false;
   }
-
-  creaLista();
+  if (statoScelto === 'mancanti' && preso) {
+    return false;
+  }
+   return true;  
 }
 
 
-/* ---------- LISTA PAGINA ---------- */
-
-
+// Crea la riga di ogni Pokémon.
+// catturato = true per i presi (con tipi e ✕), false per quelli da prendere
 function creaCard(p, catturato) {
-  // Creo la riga 
-  const li = document.createElement('li');
+  const li = document.createElement('li');    // creo la riga
 
-  // Creo il numero
   const numero = document.createElement('div');
-  numero.className = 'numero';
-  numero.textContent = '#' + p.id;
-
-  // Creo il nome
-  const nome = document.createElement('div');
-  nome.className = 'nome';
-  nome.textContent = p.name;
-
+  numero.classList.add('numero');
+  numero.textContent = '#' + p.id;            
   li.appendChild(numero);
+
+  const nome = document.createElement('div');
+  nome.classList.add('nome');
+  nome.textContent = p.name;                  // es. pikachu
   li.appendChild(nome);
 
-  // aggiungo i tipi 
   if (catturato) {
-    li.className = 'catturato';
-
-    // Creo il contenitore dei tipi
+    li.classList.add('catturato');            
     const tipi = document.createElement('div');
-    tipi.className = 'tipi';
 
+    tipi.classList.add('tipi');
     for (let i = 0; i < p.types.length; i++) {
       const tipo = document.createElement('span');
-      tipo.className = 'tipo ' + p.types[i];
+      tipo.classList.add('tipo') + p.types[i];  
       tipo.textContent = p.types[i];
       tipi.appendChild(tipo);
     }
     li.appendChild(tipi);
 
-    // // Creo il pulsante ✕ e gli salvo l'id del Pokémon
-    // const rimuoviBtn = document.createElement('button');
-    // rimuoviBtn.className = 'rimuovi';
-    // rimuoviBtn.textContent = '✕';
-    // rimuoviBtn.dataset.id = p.id;  // così al click so quale togliere
-    // li.appendChild(rimuoviBtn);
+    const btnRimuovi = document.createElement('button');
+    btnRimuovi.classList.add ('rimuovi');
+    btnRimuovi.textContent = '✕';
+    li.appendChild(btnRimuovi);
 
   } else {
-    li.className = 'fantasma';
+    li.classList.add('fantasma');                // stile sbiadito
   }
+  
   return li;
 }
 
-function visualizzazione(preso) {
-  if (stato === 'catturati' && !preso) {
-    return false;   // non è catturato, quindi non lo voglio vedere
-  }
-  if (stato === 'mancanti' && preso) {
-    return false;   // è catturato, quindi non lo voglio vedere
-  }
-  return true
-}
-
-
+// Creo la lista
 function creaLista() {
-  // Svuoto la lista, 
-  lista.innerHTML = "";
+  lista.innerHTML = '';                       // la svuoto
 
-  // Scorro tutti i Pokémon della generazione
-  for (let i = 0; i < base.length; i++) {
+  for (let i = 0; i < base.length; i++) {     
     const p = base[i];
+    const preso = trovaCatturato(p.id);       // cerco se è tra i catturati
 
-    // Cerco il Pokémon tra i catturati.
-    const preso = trovaCatturato(p.id);
-
- if (visualizzazione(preso)) {
+    // controllo se è catturato, ed in base a ciò creo la  lista
+    if (passaFiltri(preso)) {                 
       if (preso) {
-        // È catturato: uso i dati salvati, che hanno anche i tipi
-        lista.appendChild(creaCard(preso, true));
+        lista.appendChild(creaCard(preso, true));  
       } else {
-        // Non è catturato: uso i dati della lista base
-        lista.appendChild(creaCard(p, false));
+        lista.appendChild(creaCard(p, false));    
       }
-
-
+    }
   }
-    //aggiorno barra e contatori
-    aggiornaContatori();
-
-}
+  aggiornaContatori();                        // aggiorno numeri e barra
 }
 
+// Aggiorna i contaotri e la barra del progresso
 function aggiornaContatori() {
-  const presi = catturati.length
-
-  const mancanti = totale - presi;
-
+  const presi = catturati.length;             
   contaCatturati.textContent = presi;
-  contaMancanti.textContent = mancanti;
-
-  barra.style.width = (presi / totale) * 100 + `%`;
+  contaMancanti.textContent = totale - presi; // quanti ne mancano
+  barra.style.width = (presi / totale) * 100 + '%';
 }
 
-/* ----------  EVENTI PAGINA ---------- */
 
-form.addEventListener(`submit`, async function form(e) {
-  e.preventDefault();
+/* ===== EVENTI ===== */
 
-  const pokemon = await recuperaPokemon(campo.value);
+// Submit form
+form.addEventListener('submit', function (evento) {
+  evento.preventDefault();                    // blocco il ricaricamento della pagina
 
-  if (pokemon === null) {
-    alert(`Nome del pokemon cercato non valido/ non trovato`);
+  const id = trovaId(campo.value);     // cerco nella lista base
+  if (id === 0) {                             
+    alert('Pokémon non trovato.');
     return;
   }
-  //controllo se appartiene alle generazioni corrette
 
-  if (pokemon.id < primo_ID || pokemon.id > ultimo_ID) {
-    alert(pokemon.name + ' non appartiene alle prime quattro generazioni.');
+  if (trovaCatturato(id)) {                   
+    alert('Questo Pokémon è già nella tua Pokédex!');
     return;
   }
-  catturati.push(pokemon);
-  salvaInMemoria();
-  creaLista();
-  alert(pokemon.name + ' catturato!');
-  campo.value = '';
-})
 
+  catturaPokemon(id);                         
+});
+
+// aggiungo o tolgo la classe 'notte'
 darkMode.addEventListener('click', function () {
-  // Aggiungo la classe 'notte' al tag <html>, o la tolgo se c'è già
   document.documentElement.classList.toggle('notte');
 });
 
-statoSelect.addEventListener(`change`, function(){
-  stato = statoSelect.value;
+// Cambio dello stato: ridisegno la lista
+statoSelect.addEventListener('change', function () {
   creaLista();
-})
-
-filtro.addEventListener('change', function () {
-  filtroAttivo = filtro.value;      // salvo il tipo scelto
-  creaLista();                      // ridisegno con il nuovo filtro
 });
+
 
 
 caricaDallaMemoria();
 aggiornaContatori();
-caricaBase(); 
+caricaBase();           
