@@ -159,7 +159,7 @@ function creaCard(p, catturato) {
     tipi.classList.add('tipi');
     for (let i = 0; i < p.types.length; i++) {
       const tipo = document.createElement('span');
-      tipo.classList.add('tipo') + p.types[i];  
+      tipo.classList.add('tipo' , p.types[i]);  
       tipo.textContent = p.types[i];
       tipi.appendChild(tipo);
     }
