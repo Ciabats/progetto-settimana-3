@@ -12,6 +12,21 @@ body {
   background: linear-gradient(#e3350d, #3a0802);
 }
 
+body::before{
+  position: fixed;
+  top: 50px;
+  right: 50px;;
+  bottom:50px ;
+  left: 50px;;
+  content: "";
+background-image: url(../img/pokeball.png);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  opacity: 0.2;
+  z-index: -1;
+}
+
 /* ---------- HEADER ---------- */
 
 /* position: relative serve come punto di riferimento per il pulsante Dark mode */
